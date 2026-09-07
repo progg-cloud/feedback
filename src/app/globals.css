@@ -1,0 +1,172 @@
+@import "tailwindcss";
+
+/* ============================================================
+   RohtreMedia — dark theme
+   Near-black canvas, lifted cards, brand red accent.
+   Forum (serif) for display type, Poppins for text.
+   ============================================================ */
+@theme {
+  --color-brand: #e8262c;          /* primary red */
+  --color-brand-dark: #ff3b41;     /* hover / lift on dark */
+  --color-brand-tint: #24100f;     /* faint red wash for highlighted rows */
+
+  --color-ink: #050505;            /* deepest band — hero / footer */
+  --color-ink-soft: #f4f4f5;       /* primary text */
+  --color-paper: #141414;          /* card / surface */
+  --color-field: #0d0d0d;          /* recessed inputs */
+  --color-mist: #0a0a0a;           /* page canvas */
+  --color-cream: #16130f;          /* rare accent band */
+
+  --color-line: #262626;           /* hairline borders */
+  --color-muted: #9a9a9a;          /* secondary text */
+  --color-muted-dark: #6b6b6b;     /* tertiary text */
+
+  --color-ok: #34d058;             /* rating 4–5 */
+  --color-warn: #e0a533;           /* rating 3 */
+  --color-bad: #f0483e;            /* rating 1–2 */
+
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--font-forum), Georgia, "Times New Roman", serif;
+
+  --radius-pill: 9999px;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-mist);
+  color: var(--color-ink-soft);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+/* Display type: Forum, single weight — never synthesise bold. */
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+}
+
+/* Signature heading pattern: red uppercase eyebrow + short red divider. */
+.eyebrow {
+  font-family: var(--font-display);
+  color: var(--color-brand);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-weight: 400;
+  font-size: 0.72rem;
+}
+
+.rule {
+  display: block;
+  width: 2.25rem;
+  height: 2px;
+  background: var(--color-brand);
+  border-radius: 2px;
+}
+.rule-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Consistent focus ring */
+.focusable:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(232, 38, 44, 0.35);
+}
+
+/* ============================================================
+   Motion — used sparingly: route/tab changes, sidebar, modals.
+   ============================================================ */
+@keyframes rm-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rm-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes rm-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.anim-rise {
+  animation: rm-rise 0.34s var(--ease-out-soft) both;
+}
+.anim-fade {
+  animation: rm-fade 0.28s ease both;
+}
+.anim-pop {
+  animation: rm-pop 0.2s var(--ease-out-soft) both;
+}
+
+/* Sidebar link: animated active indicator */
+.nav-link {
+  position: relative;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    padding-left 0.22s var(--ease-out-soft);
+}
+.nav-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 0;
+  width: 2px;
+  background: var(--color-brand);
+  transform: translateY(-50%);
+  transition: height 0.24s var(--ease-out-soft);
+}
+.nav-link[data-active="true"] {
+  padding-left: 1rem;
+}
+.nav-link[data-active="true"]::before {
+  height: 1.15rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-rise,
+  .anim-fade,
+  .anim-pop {
+    animation: none;
+  }
+  .nav-link,
+  .nav-link::before {
+    transition: none;
+  }
+}
