@@ -128,7 +128,7 @@ export function ClientsManager({
         open={adding}
         onClose={() => setAdding(false)}
         title="Add client"
-        size="lg"
+        size="xl"
       >
         <ClientForm
           action={createClientRecord}
@@ -141,7 +141,7 @@ export function ClientsManager({
         open={editing != null}
         onClose={() => setEditing(null)}
         title={`Edit ${editing?.name ?? ""}`}
-        size="lg"
+        size="xl"
       >
         {editing ? (
           <ClientForm
