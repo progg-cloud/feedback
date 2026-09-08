@@ -1,7 +1,7 @@
 import { clsx } from "@/lib/clsx";
 
 const inputClass =
-  "focusable w-full rounded-lg border border-line bg-field px-3 py-2 text-sm text-ink-soft placeholder:text-muted-dark";
+  "focusable w-full rounded-lg border border-[color:var(--color-line-strong)] bg-field px-3 py-2.5 text-sm text-ink-soft placeholder:text-muted-dark transition-colors hover:border-white/25 focus:border-brand";
 
 export function Label({
   children,

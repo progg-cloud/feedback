@@ -13,11 +13,13 @@
   --color-ink: #050505;            /* deepest band — hero / footer */
   --color-ink-soft: #f4f4f5;       /* primary text */
   --color-paper: #141414;          /* card / surface */
-  --color-field: #0d0d0d;          /* recessed inputs */
+  --color-raised: #1f1f1f;         /* modals / menus — one step above cards */
+  --color-field: #101010;          /* recessed inputs */
   --color-mist: #0a0a0a;           /* page canvas */
   --color-cream: #16130f;          /* rare accent band */
 
-  --color-line: #262626;           /* hairline borders */
+  --color-line: #2e2e2e;           /* hairline borders */
+  --color-line-strong: #3d3d3d;    /* input outlines, modal edges */
   --color-muted: #9a9a9a;          /* secondary text */
   --color-muted-dark: #6b6b6b;     /* tertiary text */
 

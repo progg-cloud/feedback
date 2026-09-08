@@ -28,7 +28,7 @@ export function ClientPicker({
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           required
-          className="focusable w-full rounded-lg border border-line bg-field px-3 py-2 text-sm text-ink-soft"
+          className="focusable w-full rounded-lg border border-[color:var(--color-line-strong)] bg-field px-3 py-2.5 text-sm text-ink-soft transition-colors hover:border-white/25 focus:border-brand"
         >
           <option value="" disabled>
             Select…
