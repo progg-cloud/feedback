@@ -22,7 +22,7 @@ export function ClientPicker({
       }}
     >
       <div>
-        <Label htmlFor="client">Your company</Label>
+        <Label htmlFor="client">Your Business</Label>
         <select
           id="client"
           value={slug}

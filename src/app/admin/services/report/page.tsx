@@ -3,19 +3,30 @@ import { getServiceReport } from "@/server/reports";
 import { formatPeriodMonth } from "@/lib/month";
 import { Card, EyebrowHeading } from "@/components/ui/Card";
 import { RatingBadge } from "@/components/ui/Badge";
+import { DownloadCsvButton } from "@/components/admin/DownloadCsvButton";
 
 export const metadata = { title: "Service report — Admin" };
 
 export default async function ServiceReportPage() {
   const scores = await getServiceReport();
 
+  const csvRows = scores.map((s) => ({
+    service: s.service_name,
+    average_rating: s.average,
+    responses: s.responses,
+    low_ratings: s.lows.length,
+  }));
+
   return (
     <div className="space-y-6">
-      <EyebrowHeading
-        eyebrow="Report"
-        title="Where we're weakest"
-        subtitle="Average score per service across every client, worst first."
-      />
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <EyebrowHeading
+          eyebrow="Report"
+          title="Where we're weakest"
+          subtitle="Average score per service across every client, worst first."
+        />
+        <DownloadCsvButton rows={csvRows} filename="service-report.csv" />
+      </div>
 
       {scores.length === 0 ? (
         <Card className="text-center text-muted">

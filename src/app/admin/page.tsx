@@ -4,19 +4,33 @@ import { formatPeriodMonth } from "@/lib/month";
 import { Card, EyebrowHeading } from "@/components/ui/Card";
 import { CopyLinkButton } from "@/components/admin/CopyLinkButton";
 import { TrendChart } from "@/components/admin/TrendChart";
+import { DownloadCsvButton } from "@/components/admin/DownloadCsvButton";
 
 export const metadata = { title: "Overview — Admin" };
 
 export default async function AdminOverviewPage() {
   const d = await getDashboardData();
 
+  const csvRows = d.trend.map((t) => ({
+    month: t.label,
+    average_rating: t.average ?? "",
+    submissions: t.count,
+  }));
+
   return (
     <div className="space-y-6">
-      <EyebrowHeading
-        eyebrow="Admin"
-        title="Overview"
-        subtitle={`Feedback for ${formatPeriodMonth(d.currentMonth)}`}
-      />
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <EyebrowHeading
+          eyebrow="Admin"
+          title="Overview"
+          subtitle={`Feedback for ${formatPeriodMonth(d.currentMonth)}`}
+        />
+        <DownloadCsvButton
+          rows={csvRows}
+          filename="overview-trend.csv"
+          label="Download trend CSV"
+        />
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Stat label="Submissions this month" value={String(d.submissionsThisMonth)} />

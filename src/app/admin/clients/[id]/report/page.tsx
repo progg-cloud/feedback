@@ -6,6 +6,7 @@ import { formatPeriodMonth } from "@/lib/month";
 import { ratingColor } from "@/lib/theme";
 import { Card, EyebrowHeading } from "@/components/ui/Card";
 import { TrendChart } from "@/components/admin/TrendChart";
+import { DownloadCsvButton } from "@/components/admin/DownloadCsvButton";
 
 export const metadata = { title: "Client report — Admin" };
 
@@ -21,13 +22,49 @@ export default async function ClientReportPage({
 
   const hasData = report.trend.length > 0;
 
+  const csvRows = [
+    ...report.heatmap.services.flatMap((svc) =>
+      report.heatmap.months.map((m) => ({
+        month: m.label,
+        row_type: "service_rating",
+        service: svc,
+        rating: report.heatmap.cells[svc]?.[m.key] ?? "",
+        text: "",
+      })),
+    ),
+    ...report.narrative.flatMap((n) => [
+      {
+        month: formatPeriodMonth(n.period),
+        row_type: "what_went_wrong",
+        service: "",
+        rating: "",
+        text: n.what_went_wrong ?? "",
+      },
+      {
+        month: formatPeriodMonth(n.period),
+        row_type: "what_can_we_improve",
+        service: "",
+        rating: "",
+        text: n.what_can_we_improve ?? "",
+      },
+    ]),
+  ];
+
   return (
     <div className="space-y-6">
-      <EyebrowHeading
-        eyebrow="Report"
-        title={client.name}
-        subtitle="Satisfaction over time, service by service."
-      />
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <EyebrowHeading
+          eyebrow="Report"
+          title={client.name}
+          subtitle="Satisfaction over time, service by service."
+        />
+        {hasData ? (
+          <DownloadCsvButton
+            rows={csvRows}
+            filename={`${client.slug}-report.csv`}
+          />
+        ) : null}
+      </div>
       <p className="text-sm text-muted">
         <Link href={`/admin/clients/${id}`} className="hover:text-brand">
           ← Back to {client.name}

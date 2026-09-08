@@ -17,7 +17,7 @@ export default async function HomePage() {
   return (
     <PublicShell
       heroTitle="Tell us how we're doing"
-      heroSubtitle="Pick your company to leave this month's feedback."
+      heroSubtitle="Select your business to leave this month's feedback."
     >
       <Card>
         {clients && clients.length > 0 ? (

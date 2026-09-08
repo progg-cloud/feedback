@@ -6,7 +6,7 @@ export const metadata = { title: "Admin sign in — RohtreMedia" };
 
 export default function LoginPage() {
   return (
-    <main className="grid min-h-screen place-items-center bg-mist px-5">
+    <main className="grid min-h-screen place-items-center bg-mist px-6">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
           <Wordmark />

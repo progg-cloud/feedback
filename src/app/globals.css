@@ -133,13 +133,13 @@ h3,
   animation: rm-pop 0.2s var(--ease-out-soft) both;
 }
 
-/* Sidebar link: animated active indicator */
+/* Sidebar link: animated active indicator (no horizontal shift — every
+   item keeps the same left edge as the header logo). */
 .nav-link {
   position: relative;
   transition:
-    color 0.2s ease,
-    background-color 0.2s ease,
-    padding-left 0.22s var(--ease-out-soft);
+    color 0.18s ease,
+    background-color 0.18s ease;
 }
 .nav-link::before {
   content: "";
@@ -147,16 +147,18 @@ h3,
   left: 0;
   top: 50%;
   height: 0;
-  width: 2px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
   background: var(--color-brand);
   transform: translateY(-50%);
-  transition: height 0.24s var(--ease-out-soft);
-}
-.nav-link[data-active="true"] {
-  padding-left: 1rem;
+  opacity: 0;
+  transition:
+    height 0.22s var(--ease-out-soft),
+    opacity 0.18s ease;
 }
 .nav-link[data-active="true"]::before {
-  height: 1.15rem;
+  height: 1.1rem;
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {

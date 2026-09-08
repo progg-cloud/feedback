@@ -125,9 +125,44 @@ Until a client has at least one service assigned, their form shows a polite
 
 | script | purpose |
 |---|---|
-| `scripts/create-admin.mjs <email> <pw>` | create / reset an admin user |
-| `scripts/smoke.mjs` | seed → test public flow end to end → clean up (dev server must be running) |
-| `scripts/smoke-admin.mjs <email> <pw>` | verify the authenticated-admin DB operations + RLS |
+| `node scripts/create-admin.mjs <email> <pw>` | create / reset an admin user |
+| `node scripts/smoke.mjs` | seed → test public flow end to end → clean up (dev server must be running) |
+| `node scripts/smoke-admin.mjs <email> <pw>` | verify the authenticated-admin DB operations + RLS |
+| `npm run seed:demo` | load the review demo data (see below) |
+| `npm run seed:demo:clean` | remove all demo data |
+
+---
+
+## Demo / test data
+
+`scripts/seed-demo.ts` populates the portal so every screen can be reviewed as
+if it were live. It is **completely separate from the schema migration** — the
+production database still ships empty.
+
+```bash
+npm run seed:demo         # populate
+npm run seed:demo:clean   # remove
+```
+
+What it creates:
+
+- One client, **`Test Client (Demo)`** (slug `test-client`, note "Demo data for
+  internal review — delete before launch"), visible in the public dropdown
+- Seven services (Meta Ads Support, Google Ads Support, Social Media Posting,
+  Video Editing, Creative Direction, Lead Quality, Project Manager Support),
+  all assigned to that client
+- Six months of feedback: average climbs from ~3.6 → dips to ~2.7 → recovers to
+  ~4.6, with Lead Quality consistently weak and Project Manager Support
+  consistently strong, plus realistic written feedback and scattered
+  per-service comments, and a mix of named / anonymous submitters
+
+It only ever touches the `test-client` slug and those seven service names —
+nothing else in the database. Re-running `seed:demo` is safe (it upserts).
+
+> ### ⚠ Before launch
+> Run **`npm run seed:demo:clean`** to wipe the demo client, its feedback, and
+> any of the seven demo services not yet used by a real client. Confirm the
+> Clients and Services screens are empty, then go live.
 
 ---
 
@@ -138,6 +173,6 @@ Until a client has at least one service assigned, their form shows a polite
 | 1 · Supabase schema, RPC, RLS | ✅ done — see `docs/DATABASE.md` |
 | 2 · Admin auth + clients/services management | ✅ done |
 | 3 · Public form (dynamic services, submit, update-in-place, empty state) | ✅ done |
-| 4 · Brand styling | 🟡 tokens + patterns in place (`src/app/globals.css`, `src/lib/theme.ts`); needs a pass against the live site (exact red, logo asset, fonts) |
-| 5 · Admin dashboard + charts | 🟡 overview + both reports built; CSV export not yet wired |
-| 6 · Deploy + subdomain | ⬜ pending your review |
+| 4 · Brand styling | 🟡 dark theme + Forum/Poppins type + patterns in place; still needs the real logo asset and a final check of the exact brand red |
+| 5 · Admin dashboard + charts | ✅ overview, per-client report (trend + heatmap), service report, CSV export on every list/report view |
+| 6 · Deploy + subdomain | ✅ live on Netlify at `feedback.rohtremedia.report` |

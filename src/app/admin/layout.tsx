@@ -15,22 +15,20 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-mist">
-      <header className="border-b border-line bg-paper">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-          <div className="flex items-center gap-3">
-            <Link href="/admin">
-              <Wordmark />
-            </Link>
-            <span className="hidden text-xs font-semibold uppercase tracking-widest text-muted sm:inline">
+      <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
+          <Link href="/admin" className="flex items-center gap-2.5">
+            <Wordmark />
+            <span className="hidden text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-muted sm:inline">
               Admin
             </span>
-          </div>
+          </Link>
           <div className="flex items-center gap-3 text-sm">
             <span className="hidden text-muted sm:inline">{user.email}</span>
             <form action="/auth/sign-out" method="post">
               <button
                 type="submit"
-                className="focusable rounded-full border border-line px-3 py-1.5 font-semibold text-ink-soft hover:border-ink-soft"
+                className="focusable rounded-full border border-line px-3 py-1.5 text-xs font-semibold text-ink-soft transition-colors hover:border-ink-soft hover:bg-white/[0.04]"
               >
                 Sign out
               </button>
@@ -39,7 +37,7 @@ export default async function AdminLayout({
         </div>
       </header>
 
-      <div className="mx-auto flex max-w-6xl gap-6 px-5 py-6">
+      <div className="mx-auto flex max-w-6xl gap-8 px-6 py-8">
         <AdminNav />
         <main className="min-w-0 flex-1">
           <RouteTransition>{children}</RouteTransition>

@@ -24,7 +24,7 @@ export function PublicShell({
               "radial-gradient(closest-side, rgba(232,38,44,0.35), transparent)",
           }}
         />
-        <div className="relative mx-auto max-w-3xl px-5 py-14 text-center sm:py-20">
+        <div className="relative mx-auto max-w-3xl px-6 py-14 text-center sm:py-20">
           <p className="eyebrow">{heroEyebrow}</p>
           <h1 className="mt-3 text-[2rem] font-display tracking-tight sm:text-[2.75rem] sm:leading-[1.15]">
             {heroTitle}
@@ -36,7 +36,7 @@ export function PublicShell({
         </div>
       </section>
       <main className="flex-1 bg-mist">
-        <div className="mx-auto max-w-3xl px-5 py-10">
+        <div className="mx-auto max-w-3xl px-6 py-10">
           <RouteTransition>{children}</RouteTransition>
         </div>
       </main>

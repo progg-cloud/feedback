@@ -1,14 +1,34 @@
+import Image from "next/image";
 import Link from "next/link";
 
-/** RohtreMedia wordmark. Replace with the real logo asset during the brand pass. */
-export function Wordmark({ onDark = false }: { onDark?: boolean }) {
+/** RohtreMedia logo lockup — the R mark plus the wordmark. */
+export function Wordmark({
+  onDark = false,
+  markOnly = false,
+}: {
+  onDark?: boolean;
+  markOnly?: boolean;
+}) {
   return (
-    <span
-      className={`text-xl font-display tracking-tight ${
-        onDark ? "text-white" : "text-ink-soft"
-      }`}
-    >
-      Rohtre<span className="text-brand">Media</span>
+    <span className="inline-flex items-center gap-2.5 align-middle">
+      <Image
+        src="/rohtre-r.png"
+        alt="RohtreMedia"
+        width={119}
+        height={124}
+        priority
+        unoptimized
+        className="h-8 w-auto"
+      />
+      {markOnly ? null : (
+        <span
+          className={`text-lg font-display tracking-tight ${
+            onDark ? "text-white" : "text-ink-soft"
+          }`}
+        >
+          Rohtre<span className="text-brand">Media</span>
+        </span>
+      )}
     </span>
   );
 }
@@ -16,8 +36,8 @@ export function Wordmark({ onDark = false }: { onDark?: boolean }) {
 export function SiteHeader() {
   return (
     <header className="border-b border-line bg-paper">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
-        <Link href="/">
+      <div className="flex h-16 w-full items-center justify-between px-5 sm:px-8">
+        <Link href="/admin" aria-label="Admin panel">
           <Wordmark />
         </Link>
         <span className="text-xs font-semibold uppercase tracking-widest text-muted">
@@ -31,15 +51,15 @@ export function SiteHeader() {
 export function SiteFooter() {
   return (
     <footer className="mt-auto bg-ink text-muted-dark">
-      <div className="mx-auto flex max-w-5xl flex-col gap-2 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex w-full flex-col gap-3 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <Wordmark onDark />
         <p>
           Questions?{" "}
           <a
-            href="mailto:hello@rohtremedia.com"
+            href="mailto:sales@rohtremedia.com"
             className="text-white underline-offset-2 hover:underline"
           >
-            hello@rohtremedia.com
+            sales@rohtremedia.com
           </a>
         </p>
       </div>
