@@ -1,0 +1,13 @@
+# Netlify configuration for the RM Feedback Portal (Next.js).
+#
+# Secrets scanning flags any env var value it finds in the build output. The
+# three keys below are `NEXT_PUBLIC_*`, so Next.js inlines them into the client
+# bundle by design — they are meant to be public and are safe to expose:
+#   - NEXT_PUBLIC_SUPABASE_URL / _ANON_KEY: browser-facing Supabase creds,
+#     guarded by row level security (see supabase/migrations/*_rls_policies.sql).
+#   - NEXT_PUBLIC_SITE_URL: the portal's own public base URL.
+#
+# SUPABASE_SERVICE_ROLE_KEY is deliberately NOT listed: it must stay
+# server-only, and scanning should keep failing the build if it ever leaks.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SITE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,NEXT_PUBLIC_SUPABASE_URL"
