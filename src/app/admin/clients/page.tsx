@@ -1,4 +1,4 @@
-import { listClientsOverview } from "@/server/queries";
+import { listClientsOverview, listActiveServices } from "@/server/queries";
 import { siteUrl } from "@/lib/site-url";
 import { formatPeriodMonth } from "@/lib/month";
 import { EyebrowHeading } from "@/components/ui/Card";
@@ -8,7 +8,10 @@ import { ClientsManager } from "./ClientsManager";
 export const metadata = { title: "Clients — Admin" };
 
 export default async function ClientsPage() {
-  const clients = await listClientsOverview();
+  const [clients, services] = await Promise.all([
+    listClientsOverview(),
+    listActiveServices(),
+  ]);
 
   const csvRows = clients.map((c) => ({
     name: c.name,
@@ -31,7 +34,11 @@ export default async function ClientsPage() {
         />
         <DownloadCsvButton rows={csvRows} filename="clients.csv" />
       </div>
-      <ClientsManager clients={clients} baseUrl={siteUrl()} />
+      <ClientsManager
+        clients={clients}
+        services={services}
+        baseUrl={siteUrl()}
+      />
     </div>
   );
 }

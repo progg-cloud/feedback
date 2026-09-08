@@ -7,6 +7,7 @@ export type ServiceRow = Tables<"services">;
 
 export type ClientOverview = ClientRow & {
   service_count: number;
+  assigned_service_ids: string[];
   last_period: string | null;
   latest_average: number | null;
 };
@@ -19,7 +20,7 @@ export async function listClientsOverview(): Promise<ClientOverview[]> {
       supabase.from("clients").select("*").order("name"),
       supabase
         .from("client_services")
-        .select("client_id")
+        .select("client_id, service_id")
         .eq("is_active", true),
       supabase
         .from("feedback_submissions")
@@ -28,9 +29,11 @@ export async function listClientsOverview(): Promise<ClientOverview[]> {
     ]);
   if (cErr) throw cErr;
 
-  const countByClient = new Map<string, number>();
+  const servicesByClient = new Map<string, string[]>();
   for (const a of assigns ?? []) {
-    countByClient.set(a.client_id, (countByClient.get(a.client_id) ?? 0) + 1);
+    const list = servicesByClient.get(a.client_id) ?? [];
+    list.push(a.service_id);
+    servicesByClient.set(a.client_id, list);
   }
   const latestByClient = new Map<
     string,
@@ -45,12 +48,30 @@ export async function listClientsOverview(): Promise<ClientOverview[]> {
     }
   }
 
-  return (clients ?? []).map((c) => ({
-    ...c,
-    service_count: countByClient.get(c.id) ?? 0,
-    last_period: latestByClient.get(c.id)?.period_month ?? null,
-    latest_average: latestByClient.get(c.id)?.average_rating ?? null,
-  }));
+  return (clients ?? []).map((c) => {
+    const assigned = servicesByClient.get(c.id) ?? [];
+    return {
+      ...c,
+      service_count: assigned.length,
+      assigned_service_ids: assigned,
+      last_period: latestByClient.get(c.id)?.period_month ?? null,
+      latest_average: latestByClient.get(c.id)?.average_rating ?? null,
+    };
+  });
+}
+
+/** Active services (id, name, description) for the client-assignment checklist. */
+export async function listActiveServices(): Promise<
+  Pick<ServiceRow, "id" | "name" | "description">[]
+> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("services")
+    .select("id, name, description")
+    .eq("is_active", true)
+    .order("name");
+  if (error) throw error;
+  return data ?? [];
 }
 
 export async function getClient(id: string): Promise<ClientRow | null> {

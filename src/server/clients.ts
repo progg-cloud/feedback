@@ -33,14 +33,42 @@ export async function createClientRecord(
   const slug = slugify(slugInput || name);
   if (!slug) return { ok: false, error: "Could not build a slug from that name." };
 
-  const { error } = await supabase.from("clients").insert({
-    name,
-    slug,
-    contact_email: contactEmail || null,
-    notes: notes || null,
-    hide_from_public_dropdown: hide,
-  });
-  if (error) return { ok: false, error: messageFor(error) };
+  const serviceIds = formData
+    .getAll("service_ids")
+    .map(String)
+    .filter(Boolean);
+
+  const { data: client, error } = await supabase
+    .from("clients")
+    .insert({
+      name,
+      slug,
+      contact_email: contactEmail || null,
+      notes: notes || null,
+      hide_from_public_dropdown: hide,
+    })
+    .select("id")
+    .single();
+  if (error || !client) {
+    return { ok: false, error: messageFor(error ?? { message: "Insert failed" }) };
+  }
+
+  if (serviceIds.length > 0) {
+    const { error: aErr } = await supabase.from("client_services").insert(
+      serviceIds.map((service_id, i) => ({
+        client_id: client.id,
+        service_id,
+        sort_order: i,
+        is_active: true,
+      })),
+    );
+    if (aErr) {
+      return {
+        ok: false,
+        error: `Client created, but assigning services failed: ${aErr.message}`,
+      };
+    }
+  }
 
   revalidatePath("/admin/clients");
   revalidatePath("/admin");
@@ -74,6 +102,43 @@ export async function updateClientRecord(
     })
     .eq("id", id);
   if (error) return { ok: false, error: messageFor(error) };
+
+  // Reconcile service assignments against the checked boxes.
+  const checked = new Set(
+    formData.getAll("service_ids").map(String).filter(Boolean),
+  );
+  const { data: existing } = await supabase
+    .from("client_services")
+    .select("service_id, sort_order")
+    .eq("client_id", id);
+  const existingIds = new Set((existing ?? []).map((r) => r.service_id));
+
+  const toAdd = [...checked].filter((sid) => !existingIds.has(sid));
+  const toRemove = [...existingIds].filter((sid) => !checked.has(sid));
+  const maxOrder = Math.max(
+    -1,
+    ...(existing ?? []).map((r) => r.sort_order),
+  );
+
+  if (toAdd.length > 0) {
+    const { error: aErr } = await supabase.from("client_services").insert(
+      toAdd.map((service_id, i) => ({
+        client_id: id,
+        service_id,
+        sort_order: maxOrder + 1 + i,
+        is_active: true,
+      })),
+    );
+    if (aErr) return { ok: false, error: aErr.message };
+  }
+  if (toRemove.length > 0) {
+    const { error: dErr } = await supabase
+      .from("client_services")
+      .delete()
+      .eq("client_id", id)
+      .in("service_id", toRemove);
+    if (dErr) return { ok: false, error: dErr.message };
+  }
 
   revalidatePath("/admin/clients");
   revalidatePath(`/admin/clients/${id}`);
