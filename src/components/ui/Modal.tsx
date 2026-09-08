@@ -1,16 +1,25 @@
 "use client";
 
 import { useEffect } from "react";
+import { clsx } from "@/lib/clsx";
+
+const widths = {
+  md: "max-w-lg",
+  lg: "max-w-2xl",
+  xl: "max-w-3xl",
+} as const;
 
 export function Modal({
   open,
   onClose,
   title,
+  size = "md",
   children,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
+  size?: keyof typeof widths;
   children: React.ReactNode;
 }) {
   useEffect(() => {
@@ -31,17 +40,18 @@ export function Modal({
       className="anim-fade fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm"
       onMouseDown={onClose}
     >
-      {/* Flex wrapper: centres the panel and lets tall content scroll with
-          padding preserved top and bottom. */}
       <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
         <div
           role="dialog"
           aria-modal="true"
           aria-label={title}
-          className="anim-pop w-full max-w-lg rounded-2xl border border-[color:var(--color-line-strong)] bg-raised p-6 shadow-2xl ring-1 ring-white/5"
+          className={clsx(
+            "anim-pop flex max-h-[calc(100dvh-2rem)] w-full flex-col rounded-2xl border border-[color:var(--color-line-strong)] bg-raised shadow-2xl ring-1 ring-white/5",
+            widths[size],
+          )}
           onMouseDown={(e) => e.stopPropagation()}
         >
-          <div className="mb-5 flex items-start justify-between gap-4">
+          <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-4">
             <h2 className="text-lg font-display text-ink-soft">{title}</h2>
             <button
               type="button"
@@ -60,7 +70,7 @@ export function Modal({
               </svg>
             </button>
           </div>
-          {children}
+          <div className="overflow-y-auto px-6 py-5">{children}</div>
         </div>
       </div>
     </div>

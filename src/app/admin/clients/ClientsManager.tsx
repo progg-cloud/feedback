@@ -124,7 +124,12 @@ export function ClientsManager({
         reorder a client&rsquo;s services on their own page.
       </p>
 
-      <Modal open={adding} onClose={() => setAdding(false)} title="Add client">
+      <Modal
+        open={adding}
+        onClose={() => setAdding(false)}
+        title="Add client"
+        size="lg"
+      >
         <ClientForm
           action={createClientRecord}
           services={services}
@@ -136,6 +141,7 @@ export function ClientsManager({
         open={editing != null}
         onClose={() => setEditing(null)}
         title={`Edit ${editing?.name ?? ""}`}
+        size="lg"
       >
         {editing ? (
           <ClientForm
@@ -202,44 +208,65 @@ function ClientForm({
   }, [state, onDone, router]);
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-5">
       {initial ? <input type="hidden" name="id" value={initial.id} /> : null}
 
-      <Field label="Name" htmlFor="name">
-        <Input
-          id="name"
-          name="name"
-          required
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          placeholder="Neil Guides"
-        />
-      </Field>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Name" htmlFor="name">
+          <Input
+            id="name"
+            name="name"
+            required
+            value={name}
+            onChange={(e) => onNameChange(e.target.value)}
+            placeholder="Neil Guides"
+          />
+        </Field>
 
-      <Field label="Slug" htmlFor="slug" hint="used in the private link">
-        <Input
-          id="slug"
-          name="slug"
-          value={slug}
-          onChange={(e) => {
-            setSlugTouched(true);
-            setSlug(e.target.value);
-          }}
-          placeholder="neil-guides"
-        />
-      </Field>
+        <Field label="Slug" htmlFor="slug" hint="private link">
+          <Input
+            id="slug"
+            name="slug"
+            value={slug}
+            onChange={(e) => {
+              setSlugTouched(true);
+              setSlug(e.target.value);
+            }}
+            placeholder="neil-guides"
+          />
+        </Field>
 
-      <Field label="Contact email" htmlFor="contact_email" hint="optional">
-        <Input
-          id="contact_email"
-          name="contact_email"
-          type="email"
-          defaultValue={initial?.contact_email ?? ""}
-        />
-      </Field>
+        <Field label="Contact email" htmlFor="contact_email" hint="optional">
+          <Input
+            id="contact_email"
+            name="contact_email"
+            type="email"
+            defaultValue={initial?.contact_email ?? ""}
+          />
+        </Field>
+
+        {!initial ? (
+          <label className="flex items-end gap-2 pb-2.5 text-sm text-ink-soft">
+            <input
+              type="checkbox"
+              name="hide_from_public_dropdown"
+              defaultChecked
+              className="h-4 w-4 accent-[color:var(--color-brand)]"
+            />
+            Hide from public dropdown
+          </label>
+        ) : (
+          <div />
+        )}
+      </div>
 
       <Field label="Notes" htmlFor="notes" hint="optional, admin-only">
-        <Textarea id="notes" name="notes" defaultValue={initial?.notes ?? ""} />
+        <Textarea
+          id="notes"
+          name="notes"
+          rows={2}
+          defaultValue={initial?.notes ?? ""}
+        />
       </Field>
 
       {/* Which of our services this client receives */}
@@ -258,54 +285,36 @@ function ClientForm({
             page first, then edit this client.
           </p>
         ) : (
-          <div className="max-h-52 space-y-1 overflow-y-auto rounded-lg border border-line bg-field p-1.5">
+          <div className="grid gap-0.5 rounded-lg border border-line bg-field p-2 sm:grid-cols-2">
             {services.map((s) => (
               <label
                 key={s.id}
-                className="flex cursor-pointer items-start gap-2.5 rounded-md px-2 py-1.5 text-sm hover:bg-white/5"
+                title={s.description ?? undefined}
+                className="flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-white/5"
               >
                 <input
                   type="checkbox"
                   name="service_ids"
                   value={s.id}
                   defaultChecked={assigned.has(s.id)}
-                  className="mt-0.5 h-4 w-4 accent-[color:var(--color-brand)]"
+                  className="h-4 w-4 shrink-0 accent-[color:var(--color-brand)]"
                 />
-                <span>
-                  <span className="text-ink-soft">{s.name}</span>
-                  {s.description ? (
-                    <span className="block text-xs text-muted">
-                      {s.description}
-                    </span>
-                  ) : null}
-                </span>
+                <span className="text-ink-soft">{s.name}</span>
               </label>
             ))}
           </div>
         )}
-        <p className="mt-1 text-xs text-muted">
-          Tick the services you deliver to this client — that&rsquo;s what
-          shows on their feedback form.
+        <p className="mt-1.5 text-xs text-muted">
+          Tick what you deliver to this client — that&rsquo;s what shows on
+          their feedback form.
         </p>
       </div>
-
-      {!initial ? (
-        <label className="flex items-center gap-2 text-sm text-ink-soft">
-          <input
-            type="checkbox"
-            name="hide_from_public_dropdown"
-            defaultChecked
-            className="h-4 w-4 accent-[color:var(--color-brand)]"
-          />
-          Hide from the public dropdown (recommended)
-        </label>
-      ) : null}
 
       {state && !state.ok ? (
         <p className="text-sm text-[color:var(--color-bad)]">{state.error}</p>
       ) : null}
 
-      <div className="flex justify-end gap-2 pt-2">
+      <div className="flex justify-end gap-2 border-t border-line pt-4">
         <Button type="button" variant="secondary" onClick={onDone}>
           Cancel
         </Button>
