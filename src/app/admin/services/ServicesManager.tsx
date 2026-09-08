@@ -28,9 +28,12 @@ export function ServicesManager({
   const [, startTransition] = useTransition();
 
   function remove(s: ServiceOverview) {
-    if (!confirm(`Delete "${s.name}"? This cannot be undone.`)) return;
+    const message = s.has_ratings
+      ? `"${s.name}" has client feedback attached.\n\nDeleting it permanently removes those ratings from every report. This cannot be undone.\n\nDelete anyway?`
+      : `Delete "${s.name}"? This cannot be undone.`;
+    if (!confirm(message)) return;
     startTransition(async () => {
-      const res = await deleteService(s.id);
+      const res = await deleteService(s.id, s.has_ratings);
       if (!res.ok) alert(res.error);
       else router.refresh();
     });
@@ -95,14 +98,8 @@ export function ServicesManager({
                     </button>
                     <button
                       type="button"
-                      disabled={s.has_ratings}
-                      title={
-                        s.has_ratings
-                          ? "Has ratings attached — deactivate instead"
-                          : undefined
-                      }
                       onClick={() => remove(s)}
-                      className="focusable ml-1 rounded px-2 py-1 text-xs font-semibold text-[color:var(--color-bad)] hover:underline disabled:opacity-40 disabled:no-underline"
+                      className="focusable ml-1 rounded px-2 py-1 text-xs font-semibold text-[color:var(--color-bad)] hover:underline"
                     >
                       Delete
                     </button>

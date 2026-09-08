@@ -77,34 +77,45 @@ export async function setServiceActive(
   return { ok: true };
 }
 
-export async function deleteService(id: string): Promise<ActionResult> {
+/**
+ * Delete a service. If it has feedback ratings, `force` must be true — those
+ * ratings are stripped first (the FK is ON DELETE RESTRICT). Assignments to
+ * clients are removed automatically (ON DELETE CASCADE).
+ */
+export async function deleteService(
+  id: string,
+  force = false,
+): Promise<ActionResult> {
   await requireAdmin();
   const supabase = await createClient();
 
-  // Guard: block deletion when ratings reference this service.
   const { count, error: countErr } = await supabase
     .from("feedback_ratings")
     .select("id", { count: "exact", head: true })
     .eq("service_id", id);
   if (countErr) return { ok: false, error: countErr.message };
+
   if ((count ?? 0) > 0) {
-    return {
-      ok: false,
-      error:
-        "This service has feedback ratings attached and cannot be deleted. Deactivate it instead.",
-    };
+    if (!force) {
+      return {
+        ok: false,
+        error:
+          "This service has feedback attached. Confirm again to delete it and its ratings.",
+      };
+    }
+    const { error: rErr } = await supabase
+      .from("feedback_ratings")
+      .delete()
+      .eq("service_id", id);
+    if (rErr) return { ok: false, error: rErr.message };
   }
 
   const { error } = await supabase.from("services").delete().eq("id", id);
-  if (error) {
-    if (error.code === "23503") {
-      return {
-        ok: false,
-        error: "This service is still referenced and cannot be deleted.",
-      };
-    }
-    return { ok: false, error: error.message };
-  }
+  if (error) return { ok: false, error: error.message };
+
   revalidatePath("/admin/services");
+  revalidatePath("/admin/services/report");
+  revalidatePath("/admin/clients");
+  revalidatePath("/admin");
   return { ok: true };
 }
