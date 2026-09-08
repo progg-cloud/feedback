@@ -97,7 +97,7 @@ h3,
 @keyframes rm-rise {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -115,7 +115,7 @@ h3,
 @keyframes rm-pop {
   from {
     opacity: 0;
-    transform: translateY(6px) scale(0.985);
+    transform: translateY(5px) scale(0.99);
   }
   to {
     opacity: 1;
@@ -124,13 +124,13 @@ h3,
 }
 
 .anim-rise {
-  animation: rm-rise 0.34s var(--ease-out-soft) both;
+  animation: rm-rise 0.18s var(--ease-out-soft) both;
 }
 .anim-fade {
-  animation: rm-fade 0.28s ease both;
+  animation: rm-fade 0.13s ease both;
 }
 .anim-pop {
-  animation: rm-pop 0.2s var(--ease-out-soft) both;
+  animation: rm-pop 0.16s var(--ease-out-soft) both;
 }
 
 /* Sidebar link: animated active indicator (no horizontal shift — every

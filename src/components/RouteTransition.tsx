@@ -3,20 +3,18 @@
 import { usePathname } from "next/navigation";
 
 /**
- * Replays a subtle rise-in animation whenever the route changes.
- * Keyed on pathname so React remounts the wrapper and the CSS
- * animation runs again. Respects prefers-reduced-motion (see globals.css).
+ * A quick fade whenever the route changes — keyed on pathname so the
+ * wrapper remounts and the CSS animation replays. Kept short (~130ms) so
+ * navigation feels instant. Respects prefers-reduced-motion (globals.css).
  */
 export function RouteTransition({
   children,
-  variant = "rise",
 }: {
   children: React.ReactNode;
-  variant?: "rise" | "fade";
 }) {
   const pathname = usePathname();
   return (
-    <div key={pathname} className={variant === "fade" ? "anim-fade" : "anim-rise"}>
+    <div key={pathname} className="anim-fade">
       {children}
     </div>
   );

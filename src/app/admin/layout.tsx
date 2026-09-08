@@ -11,7 +11,7 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await requireAdmin();
+  const admin = await requireAdmin();
 
   return (
     <div className="min-h-screen bg-mist">
@@ -24,7 +24,7 @@ export default async function AdminLayout({
             </span>
           </Link>
           <div className="flex items-center gap-3 text-sm">
-            <span className="hidden text-muted sm:inline">{user.email}</span>
+            <span className="hidden text-muted sm:inline">{admin.email}</span>
             <form action="/auth/sign-out" method="post">
               <button
                 type="submit"
