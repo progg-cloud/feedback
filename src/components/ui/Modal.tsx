@@ -51,7 +51,7 @@ export function Modal({
           )}
           onMouseDown={(e) => e.stopPropagation()}
         >
-          <div className="flex items-start justify-between gap-4 border-b border-line px-6 py-4">
+          <div className="flex shrink-0 items-start justify-between gap-4 border-b border-line px-6 py-4">
             <h2 className="text-lg font-display text-ink-soft">{title}</h2>
             <button
               type="button"
@@ -70,7 +70,7 @@ export function Modal({
               </svg>
             </button>
           </div>
-          <div className="overflow-y-auto px-6 py-5">{children}</div>
+          <div className="min-h-0 overflow-y-auto px-6 py-5">{children}</div>
         </div>
       </div>
     </div>

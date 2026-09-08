@@ -38,7 +38,7 @@ export function Textarea({
 }: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <textarea
-      className={clsx(inputClass, "min-h-[90px] resize-y", className)}
+      className={clsx(inputClass, "min-h-[72px] resize-y", className)}
       {...props}
     />
   );

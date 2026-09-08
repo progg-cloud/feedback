@@ -208,7 +208,7 @@ function ClientForm({
   }, [state, onDone, router]);
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form action={formAction} className="space-y-4">
       {initial ? <input type="hidden" name="id" value={initial.id} /> : null}
 
       <div className="grid gap-4 sm:grid-cols-2">

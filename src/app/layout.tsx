@@ -1,20 +1,12 @@
 import type { Metadata } from "next";
-import { Forum, Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 
-// Display face — headings, eyebrows, the wordmark, hero copy.
-const forum = Forum({
-  variable: "--font-forum",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
-
-// Text face — body copy, forms, tables, buttons (Forum has only one weight).
+// Single typeface across the whole site.
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -29,10 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${forum.variable} ${poppins.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${poppins.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-mist text-ink-soft">
         {children}
       </body>
